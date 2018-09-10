@@ -1,0 +1,32 @@
+﻿@model ICart
+@using MyBookStore.Entities.Interfaces;
+@{
+    ViewBag.Title = "Order";
+    var errDisplay = "none";
+}
+
+
+@if (ViewBag.ErrorMessage != null && ViewBag.ErrorMessage != "")
+{
+    errDisplay = "block";
+}
+else
+{
+    <h2>Order Total: @Model.OrderValue</h2>
+
+    <div id="divAvailableBooks">
+        @Html.Partial("~/Views/Cart/_Cart.cshtml", Model.AvailableBooks)
+    </div>
+
+    if (Model.UnAvailableBooks.Count > 0)
+    {
+        <h2>Unavailable Books</h2>
+        <div id="divUnAvailableBooks">
+            @Html.Partial("~/Views/Cart/_Cart.cshtml", Model.UnAvailableBooks)
+        </div>
+    }
+}
+<div id="divError" style="display: @errDisplay;">
+    <label id="lblError" class="alert-danger">@ViewBag.ErrorMessage</label>
+</div>
+

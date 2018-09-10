@@ -1,0 +1,41 @@
+﻿@model List<MyBookStore.Entities.Interfaces.IBook>
+
+<table class="table-responsive table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th style="text-align:right">Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Count > 0)
+        {
+            foreach (var book in Model)
+            {
+        <tr>
+            <td>@book.Title</td>
+            <td>@book.Author</td>
+            <td align="right">@book.Price</td>
+            <td align="center">
+               
+                    <a href="javascript:addToCart(this,'@book.ISBN');">Add To Cart</a>
+                
+            </td>
+        </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td>
+                    No Books Found
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+
+    

@@ -1,0 +1,106 @@
+﻿@model List<IBook>
+@using MyBookStore.Entities.Interfaces;
+
+@{
+    /**/
+
+    ViewBag.Title = "Books";
+    var errDisplay = "none";
+}
+
+<h2>Books</h2>
+
+
+    <div id="searchBooks">
+        <div>
+            <label>Title</label><input type="text" class="form-control" id="txtSearchTitle" placeholder="Search" onkeyup="getBooks()" />
+        </div>
+        <div>
+            <label>Author</label><input type="text" class="form-control" id="txtSearchAuthor" placeholder="Search" onkeyup="getBooks()" />
+        </div>
+    </div>
+
+    
+    <div id="divBooks">
+        @if (ViewBag.ErrorMessage != null && ViewBag.ErrorMessage != "")
+        {
+            errDisplay = "block";
+        }
+        else
+        {
+
+            @Html.Partial("~/Views/Shared/_ListOfBooks.cshtml", Model)
+
+        }
+    </div>
+            <div id="divError" style="display: @errDisplay;">
+                <label id="lblError" class="alert-danger">@ViewBag.ErrorMessage</label>
+            </div>
+            <div id="divInfo" style="display: @errDisplay;">
+                <label id="lblInfo" class="alert-success"></label>
+            </div>
+
+<div id="divProcessing" class="processingButton" style="display: none;">
+    <img width="31" height="31" alt="" class="LoadingImage" src="~/Images/ajax-loader-round.gif" />
+</div>
+
+<script type="text/javascript">
+
+    var timer;
+
+        function getBooks() {
+            clearTimeout(timer);
+            timer = setTimeout(function () {
+                $.ajax({
+                    url: '@Url.Action("GetBooks", "Book")',
+                    dataType: "html",
+                    data: { title: $('#txtSearchTitle').val(), author: $('#txtSearchAuthor').val() },
+                    type: "Get",
+                    success: function (data) {
+                        $("#divProcessing").hide();
+                        if (data.indexOf("Error") != -1) {
+                            $("#divError").show();
+                            $("#lblError").text(data);
+                        }
+                        else
+                            $('#divBooks').html(data);
+                    },
+                    beforeSend: function () {
+                        $("#divProcessing").show();
+                        $("#divError").hide();
+                        $("#divInfo").hide();
+                    }
+                });
+            });
+        }
+
+        function addToCart(button, bookNumber) {
+            $.ajax({
+                    url: '@Url.Action("AddToCart", "Cart")',
+                    dataType: "html",
+                data: { ISBN: bookNumber},
+                    type: "Get",
+                    success: function (data) {
+                        $("#divProcessing").hide();
+                        if (data != "true")
+                        {
+                            $("#divError").show();
+                            $("#lblError").text(data);
+                        }
+                        else
+                        {
+                            $("#divInfo").show();
+                            $("#lblInfo").text('Book Added To Cart')
+                        }
+                    },
+                    beforeSend: function () {
+                        $("#divProcessing").show();
+                        $("#divError").hide();
+                        $("#divInfo").hide();
+                    }
+                })
+        }
+
+</script>
+
+
